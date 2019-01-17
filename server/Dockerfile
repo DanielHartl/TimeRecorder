@@ -6,7 +6,6 @@ RUN apt-get install -y nodejs
 WORKDIR /source
 
 COPY ./ ./
-RUN dotnet test
 RUN dotnet publish "./src/Server.App/ActivityTracker.Server.App.csproj" --output "/dist" --configuration Release
 
 FROM microsoft/dotnet:2.2-aspnetcore-runtime
