@@ -28,6 +28,7 @@ namespace ActivityTracker.Server.Domain
 
         private static void Validate(DateTimeOffset start, DateTimeOffset end)
         {
+            //TODO FIX THIS
             //if (start > end) throw new ArgumentException($"{start} has to be before {end}");
         }
 
