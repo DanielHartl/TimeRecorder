@@ -8,6 +8,9 @@ variables:
   imageName: 'time-recorder:$(Build.BuildId)'
   # define two more variables dockerId and dockerPassword in the build pipeline in UI
 
+pr:
+- master
+
 steps:
 - script: |
     dotnet test server/ActivityTracker.Server.sln --logger trx
