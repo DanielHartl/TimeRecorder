@@ -10,7 +10,7 @@ variables:
 
 steps:
 - script: |
-    dotnet test --logger trx
+    dotnet test server/ActivityTracker.Server.sln --logger trx
     docker build -t $(imageName) server
     # docker run -i 
     # docker login -u $(dockerId) -p $pswd $(dockerid).azurecr.io
