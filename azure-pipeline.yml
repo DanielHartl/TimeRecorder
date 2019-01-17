@@ -16,7 +16,8 @@ pr:
 
 steps:
 - script: |
-    dotnet test server/ActivityTracker.Server.sln --logger trx
+    # dotnet restore
+    # dotnet test server/ActivityTracker.Server.sln --no-restore --logger trx
     # docker build -t $(imageName) server
     # docker run -i 
     # docker login -u $(dockerId) -p $pswd $(dockerid).azurecr.io

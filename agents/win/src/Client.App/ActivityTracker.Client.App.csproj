@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{3DFE23E0-3037-41AD-8858-46EB8618E0C6}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>ActivityTracker.Client.App</RootNamespace>
-    <AssemblyName>ActivityTracker</AssemblyName>
+    <RootNamespace>ActivityTracker.Agent.App</RootNamespace>
+    <AssemblyName>TimeRecorder.Agent</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

@@ -23,6 +23,7 @@ namespace ActivityTracker.Server.App.Controllers
         [HttpGet]
         public async Task<ActivitySummaryResponse> ActivitySummary(string key, TimeSpan timeZoneOffset)
         {
+            if (key == null) throw new ArgumentNullException(nameof(key));
             var activitySummary = await _activityService.GetActivitySummaryAsync(key, timeZoneOffset);
             return _activitySummaryFormatter.ToResponse(activitySummary);
         }
