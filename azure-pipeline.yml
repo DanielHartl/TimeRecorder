@@ -11,11 +11,11 @@ variables:
 steps:
 - script: |
     dotnet test server/ActivityTracker.Server.sln --logger trx
-    docker build -t $(imageName) server
+    # docker build -t $(imageName) server
     # docker run -i 
     # docker login -u $(dockerId) -p $pswd $(dockerid).azurecr.io
     # docker push $(dockerId).azurecr.io/$(imageName)
-    
+  failOnStderr: true
     
 - task: PublishTestResults@2
   condition: succeededOrFailed()
