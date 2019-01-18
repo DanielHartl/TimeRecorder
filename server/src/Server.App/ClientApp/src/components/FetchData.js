@@ -5,15 +5,30 @@ export class FetchData extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { summary: [], loading: true };
+    this.state = { summary: [], loading: true, closed: false };
+    
+    FetchData.fetchData(this);
+  }
+  
+  componentWillUnmount() {
+    var state = this.state;
+    state.closed = true;
+    this.setState(state);
+  }
+
+  static fetchData(obj) {
+    if(obj.state.closed) {
+      return;
+    }
 
     fetch('api/activitysummary?key=test')
       .then(response => response.json())
       .then(data => {
-          this.setState({ summary: data, loading: false });
+          obj.setState({ summary: data, loading: false });
+          setTimeout(function() { FetchData.fetchData(obj) }, 1000);
       });
   }
-  
+
   static renderSummaryTable(summary) {
     return (
       <table className='table'>
@@ -32,14 +47,14 @@ export class FetchData extends Component {
   }
 
   static renderWeeklySummary(weekly) {
-      return (
+    return (
       <React.Fragment>
       <tr>
         <td colspan="3">Week of { weekly.weekstart }</td>
       </tr>
       { weekly.daily.map(d => FetchData.renderTimeRanges(d.timeranges)) }
       </React.Fragment>
-      );
+    );
   }
 
   static renderTimeRanges(timeranges) {
