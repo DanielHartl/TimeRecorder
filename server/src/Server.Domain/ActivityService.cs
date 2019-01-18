@@ -11,6 +11,8 @@ namespace ActivityTracker.Server.Domain
         private readonly TimeSpan _toleranceWindow;
         private readonly IClock _clock;
 
+        private static readonly TimeSpan _hideIfShorterThan = TimeSpan.FromMinutes(1);
+
         public ActivityService(IActivityRepository activityRepository, TimeSpan toleranceWindow, IClock clock = null)
         {
             _activityRepository = activityRepository ?? throw new ArgumentNullException(nameof(activityRepository));
@@ -49,7 +51,9 @@ namespace ActivityTracker.Server.Domain
             var timeRanges = await _activityRepository.GetTimeRangesAsync(user, start, end);
 
             return ToActivitySummary(
-                timeRanges.SelectMany(x => x.TimeRanges)
+                timeRanges
+                    .SelectMany(x => x.TimeRanges)
+                    .Where(x => x.Duration >= _hideIfShorterThan)
                     .Select(x => new TimeRangeLocal(x.Start.ToOffset(timeZoneOffset).DateTime, x.Duration))
                     .OrderByDescending(x => x.Start.Date));
         }
