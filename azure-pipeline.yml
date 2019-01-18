@@ -16,15 +16,15 @@ steps:
 - script: |
     # dotnet restore
     # dotnet test server/ActivityTracker.Server.sln --no-restore --logger trx
-    # docker build -t temp server
+    # docker build server
     echo docker login -u $(ACRUserName) -p $(ACRPassword) $(ACRLoginServer)
     echo docker push $(ACRUserName).azurecr.io/time-recorder:$(Build.BuildNumber)
   failOnStderr: true
     
 - script: |
-    docker build -t $(ACRUserName).azurecr.io/time-recorder:$(Build.BuildNumber) server
+    docker build -t $(ACRUserName).azurecr.io/time-recorder/server:$(Build.BuildNumber) server
     docker login -u $(ACRUserName) -p $(ACRPassword) $(ACRLoginServer)
-    docker push $(ACRUserName).azurecr.io/time-recorder:$(Build.BuildNumber)
+    docker push $(ACRUserName).azurecr.io/time-recorder/server:$(Build.BuildNumber)
   condition: and(succeeded(), in(variables['Build.Reason'], 'IndividualCI', 'BatchedCI'))
   failOnStderr: true
     
