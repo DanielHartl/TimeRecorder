@@ -4,9 +4,7 @@ pool:
   vmImage: 'Ubuntu 16.04'
 
 variables:
-  buildConfiguration: 'Release'
-  imageName: 'time-recorder:$(Build.BuildId)'
-  # define two more variables dockerId and dockerPassword in the build pipeline in UI
+- group: 'ACR secrets'
 
 trigger:
 - master
@@ -18,10 +16,16 @@ steps:
 - script: |
     # dotnet restore
     # dotnet test server/ActivityTracker.Server.sln --no-restore --logger trx
-    # docker build -t $(imageName) server
-    # docker run -i 
-    # docker login -u $(dockerId) -p $pswd $(dockerid).azurecr.io
-    # docker push $(dockerId).azurecr.io/$(imageName)
+    # docker build -t temp server
+    echo docker login -u $(ACRUserName) -p $(ACRPassword) $(ACRLoginServer)
+    echo docker push $(ACRUserName).azurecr.io/time-recorder:$(Build.BuildNumber)
+  failOnStderr: true
+    
+- script: |
+    docker build -t $(ACRUserName).azurecr.io/time-recorder:$(Build.BuildNumber) server
+    docker login -u $(ACRUserName) -p $(ACRPassword) $(ACRLoginServer)
+    docker push $(ACRUserName).azurecr.io/time-recorder:$(Build.BuildNumber)
+  condition: and(succeeded(), in(variables['Build.Reason'], 'IndividualCI', 'BatchedCI'))
   failOnStderr: true
     
 - task: PublishTestResults@2
