@@ -21,6 +21,8 @@ steps:
     echo docker push $(ACRUserName).azurecr.io/time-recorder:$(Build.BuildNumber)
   failOnStderr: true
 
+- script: docker build server
+
 - script: |
     docker build -t $(ACRUserName).azurecr.io/time-recorder/server:$(Build.BuildNumber) server
     docker login -u $(ACRUserName) -p $(ACRPassword) $(ACRLoginServer)

@@ -1,7 +1,10 @@
 FROM microsoft/dotnet:2.2-sdk AS builder
 
-RUN curl -sL https://deb.nodesource.com/setup_10.x |  bash -
-RUN apt-get install -y nodejs
+RUN apt-get -y update && \
+    apt-get -y install build-essential && \
+    curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
+    apt-get install -y nodejs
+
 
 WORKDIR /source
 
