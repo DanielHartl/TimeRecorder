@@ -21,7 +21,8 @@ namespace ActivityTracker.Server.App.Formatter
         {
             return new WeeklySummaryModel(
                 weeklySummary.WeekStart.ToString("MM dd"),
-                weeklySummary.DailySummaries.Select(ToDailyModel).ToArray());
+                weeklySummary.DailySummaries.Select(ToDailyModel).ToArray(),
+                weeklySummary.TotalDuration.ToString("hh\\:mm"));
         }
 
         private DailySummaryModel ToDailyModel(DailySummary dailySummary)
@@ -35,8 +36,8 @@ namespace ActivityTracker.Server.App.Formatter
         private TimeRangeModel ToTimeRangeModel(TimeRangeLocal timeRangeLocal)
         {
             return new TimeRangeModel(
-                timeRangeLocal.Start.ToString("HH\\:mm\\:ss"), 
-                timeRangeLocal.End.ToString("HH\\:mm\\:ss"), 
+                timeRangeLocal.Start.ToString("HH\\:mm\\:ss"),
+                timeRangeLocal.End.ToString("HH\\:mm\\:ss"),
                 timeRangeLocal.Duration.ToString("hh\\:mm"));
         }
     }

@@ -50,16 +50,26 @@ export class FetchData extends Component {
     return (
       <React.Fragment>
       <tr>
-        <td colspan="3">Week of { weekly.weekstart }</td>
+        <td colspan="2">Week of { weekly.weekstart }</td><td>{ weekly.total_duration }</td>
       </tr>
-      { weekly.daily.map(d => FetchData.renderTimeRanges(d.timeranges)) }
+      { weekly.daily.map(d => FetchData.renderDailySummary(d)) }
       </React.Fragment>
     );
   }
 
-  static renderTimeRanges(timeranges) {
-      return timeranges.map(t =>
+  static renderDailySummary(daily) {
+      return (
+      <React.Fragment>
       <tr>
+        <td colspan="2">{ daily.day }</td><td>{ daily.total_duration }</td>
+      </tr>
+      { daily.timeranges.map(t => FetchData.renderTimeRanges(t)) }
+      </React.Fragment>
+      );
+  }
+
+  static renderTimeRanges(t) {
+      return (<tr>
         <td>{t.start}</td>
         <td>{t.end}</td>
         <td>{t.duration}</td>

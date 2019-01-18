@@ -23,16 +23,23 @@ namespace ActivityTracker.Server.App.Contracts
         [JsonProperty("daily")]
         public DailySummaryModel[] DailySummaryModels { get; }
 
-        public WeeklySummaryModel(string weekStart, DailySummaryModel[] dailySummaryModels)
+        [JsonProperty("total_duration")]
+        public string TotalDuration { get;}
+
+        public WeeklySummaryModel(string weekStart, DailySummaryModel[] dailySummaryModels, string totalDuration)
         {
             WeekStart = weekStart ?? throw new ArgumentNullException(nameof(weekStart));
             DailySummaryModels = dailySummaryModels ?? throw new ArgumentNullException(nameof(dailySummaryModels));
+            TotalDuration = totalDuration;
         }
     }
 
     public class DailySummaryModel
     {
+        [JsonProperty("day")]
         public string Day { get; }
+
+        [JsonProperty("total_duration")]
         public string TotalDuration { get; }
 
         [JsonProperty("timeranges")]

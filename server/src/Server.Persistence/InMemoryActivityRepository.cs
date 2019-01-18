@@ -1,4 +1,5 @@
 ﻿using ActivityTracker.Server.Domain;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -10,6 +11,32 @@ namespace ActivityTracker.Server.Persistence
     public class InMemoryActivityRepository : IActivityRepository
     {
         private readonly ConcurrentDictionary<(string tag, DateTimeOffset timeKey), TimeRangeCollection> _dataStore = new ConcurrentDictionary<(string tag, DateTimeOffset timeKey), TimeRangeCollection>();
+
+        public InMemoryActivityRepository()
+        : this(null, DateTimeOffset.MinValue, null)
+        {
+        }
+
+        public InMemoryActivityRepository(string tag, DateTimeOffset start, string timeRangesJson)
+        {
+            if (timeRangesJson != null)
+            {
+                var obj = JsonConvert.DeserializeAnonymousType(timeRangesJson,
+                    new[]
+                    {
+                        new
+                        {
+                            s = DateTime.MinValue,
+                            e = DateTime.MinValue
+                        }
+                    }
+                );
+
+                _dataStore.TryAdd((tag, timeKey: start),
+                    new TimeRangeCollection(start,
+                        obj.Select(x => new TimeRange(new DateTimeOffset(x.s), new DateTimeOffset(x.e)))));
+            }
+        }
 
         public async Task ReadAndCreateOrUpdateAsync(string tag, DateTimeOffset timeKey, Func<TimeRangeCollection, TimeRangeCollection> readAndCreateOrUpdateOperation)
         {
