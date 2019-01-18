@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 
 export class Home extends Component {
-  displayName = "Today"
+  displayName = Home.name
 
   render() {
     return (
       <div>
-        Today overview
+        <h1>Today's overview</h1>
       </div>
     );
   }
