@@ -75,14 +75,14 @@ namespace ActivityTracker.Server.App.Contracts
 
     public class ReportEventRequest
     {
-        public ReportEventRequest(string tag, DateTimeOffset eventTime)
+        public ReportEventRequest(string user, DateTimeOffset eventTime)
         {
-            Tag = tag;
+            User = user;
             EventTime = eventTime;
         }
 
         [Required]
-        public string Tag { get; }
+        public string User { get; }
         [Required]
         public DateTimeOffset EventTime { get; }
     }

@@ -20,7 +20,7 @@ namespace ActivityTracker.Server.App.Controllers
         public async Task ReportEventAsync([FromBody]ReportEventRequest reportEventRequest)
         {
             if (reportEventRequest == null) throw new ArgumentNullException(nameof(reportEventRequest));
-            await _activityService.ReportEventAsync(reportEventRequest.Tag, reportEventRequest.EventTime);
+            await _activityService.ReportEventAsync(reportEventRequest.User, reportEventRequest.EventTime);
         }
     }
 }

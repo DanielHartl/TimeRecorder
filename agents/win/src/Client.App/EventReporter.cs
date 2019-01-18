@@ -17,14 +17,14 @@ namespace ActivityTracker.Client.App
             _errorHandler = errorHandler ?? throw new ArgumentNullException(nameof(errorHandler));
         }
 
-        public async Task ReportActivityEventAsync(string tag, DateTimeOffset eventTime)
+        public async Task ReportActivityEventAsync(string user, DateTimeOffset eventTime)
         {
             try
             {
                 var httpClient = new HttpClient { BaseAddress = new Uri(_endpoint) };
 
                 var content = new StringContent(JsonConvert.SerializeObject(new {
-                    tag,
+                    user,
                     eventTime
                 }), Encoding.UTF8, "application/json");
 

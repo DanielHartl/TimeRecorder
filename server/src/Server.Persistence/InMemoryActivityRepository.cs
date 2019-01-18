@@ -48,10 +48,10 @@ namespace ActivityTracker.Server.Persistence
             _dataStore.AddOrUpdate(key, updatedData, (k, v) => updatedData);
         }
 
-        public async Task<IEnumerable<TimeRangeCollection>> GetTimeRangesAsync(string tag, DateTimeOffset from, DateTimeOffset to)
+        public async Task<IEnumerable<TimeRangeCollection>> GetTimeRangesAsync(string key, DateTimeOffset from, DateTimeOffset to)
         {
             await Task.CompletedTask;
-            return _dataStore.Where(x => x.Key.tag == tag && x.Key.timeKey >= from && x.Key.timeKey < to).Select(x => x.Value);
+            return _dataStore.Where(x => x.Key.tag == key && x.Key.timeKey >= from && x.Key.timeKey < to).Select(x => x.Value);
         }
     }
 }

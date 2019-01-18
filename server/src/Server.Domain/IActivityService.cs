@@ -5,8 +5,8 @@ namespace ActivityTracker.Server.Domain
 {
     public interface IActivityService
     {
-        Task ReportEventAsync(string tag, DateTimeOffset eventTime);
+        Task ReportEventAsync(string user, DateTimeOffset eventTime);
 
-        Task<ActivitySummary> GetActivitySummaryAsync(string tag, TimeSpan timeZoneOffset);
+        Task<ActivitySummary> GetActivitySummaryAsync(string user, TimeSpan timeZoneOffset);
     }
 }

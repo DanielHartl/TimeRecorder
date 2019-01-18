@@ -18,12 +18,12 @@ namespace ActivityTracker.Server.Domain
             _clock = clock ?? new SystemClock();
         }
 
-        public async Task ReportEventAsync(string tag, DateTimeOffset eventTime)
+        public async Task ReportEventAsync(string user, DateTimeOffset eventTime)
         {
             var weekStart = eventTime.StartOfWeek();
 
             await _activityRepository.ReadAndCreateOrUpdateAsync(
-                tag,
+                user,
                 weekStart,
                 timeRangeCollection => {
                     if (timeRangeCollection == null)
@@ -36,12 +36,17 @@ namespace ActivityTracker.Server.Domain
                 });
         }
 
-        public async Task<ActivitySummary> GetActivitySummaryAsync(string tag, TimeSpan timeZoneOffset)
+        public async Task<ActivitySummary> GetActivitySummaryAsync(string user, TimeSpan timeZoneOffset)
         {
+            if (timeZoneOffset.TotalHours < -14 || timeZoneOffset.TotalHours > 14)
+            {
+                throw new ArgumentException("Value out of range", nameof(timeZoneOffset));
+            }
+
             var start = _clock.UtcNow.Date.AddDays(-22);
             var end = _clock.UtcNow.Date.AddDays(1);
 
-            var timeRanges = await _activityRepository.GetTimeRangesAsync(tag, start, end);
+            var timeRanges = await _activityRepository.GetTimeRangesAsync(user, start, end);
 
             return ToActivitySummary(
                 timeRanges.SelectMany(x => x.TimeRanges)

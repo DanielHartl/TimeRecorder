@@ -5,27 +5,15 @@ export class FetchData extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { summary: [], loading: true, closed: false };
+    this.state = { summary: [], loading: true };
     
-    FetchData.fetchData(this);
-  }
-  
-  componentWillUnmount() {
-    var state = this.state;
-    state.closed = true;
-    this.setState(state);
-  }
+    var dt = new Date();
+    var tz = dt.getTimezoneOffset();
 
-  static fetchData(obj) {
-    if(obj.state.closed) {
-      return;
-    }
-
-    fetch('api/activitysummary?key=test')
+    fetch('api/activitysummary?user=test&timeZoneOffset=' + tz)
       .then(response => response.json())
       .then(data => {
-          obj.setState({ summary: data, loading: false });
-          setTimeout(function() { FetchData.fetchData(obj) }, 1000);
+        this.setState({ summary: data, loading: false });
       });
   }
 

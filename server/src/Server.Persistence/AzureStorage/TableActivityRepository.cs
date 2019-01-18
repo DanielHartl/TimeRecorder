@@ -71,7 +71,7 @@ namespace ActivityTracker.Server.Persistence.AzureStorage
         }
 
         public async Task<IEnumerable<TimeRangeCollection>> GetTimeRangesAsync(
-            string tag,
+            string key,
             DateTimeOffset from,
             DateTimeOffset to)
         {
@@ -82,7 +82,7 @@ namespace ActivityTracker.Server.Persistence.AzureStorage
             await tableReference.CreateIfNotExistsAsync();
 
             var filter = TableQuery.CombineFilters(
-                TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, tag),
+                TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, key),
                 TableOperators.And,
                 TableQuery.CombineFilters(
                     TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.GreaterThanOrEqual, GetRowKey(from)),

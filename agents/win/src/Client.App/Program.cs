@@ -9,7 +9,7 @@ namespace ActivityTracker.Client.App
         public static void Main(string[] args)
         {
             var endpoint = args[0];
-            var tag = args[1];
+            var user = args[1];
 
             var errorReporter = new ErrorReporter();
             var eventReporter = new EventReporter(endpoint, exception => errorReporter.WriteWarning(exception.ToString()));
@@ -22,7 +22,7 @@ namespace ActivityTracker.Client.App
 
             Func<Task> reportEvent = async () => {
                 await timeFilter.InvokeAsync(async () => {
-                    await eventReporter.ReportActivityEventAsync(tag, DateTimeOffset.UtcNow);
+                    await eventReporter.ReportActivityEventAsync(user, DateTimeOffset.UtcNow);
                 });
             };
 

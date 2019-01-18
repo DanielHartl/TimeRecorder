@@ -21,10 +21,10 @@ namespace ActivityTracker.Server.App.Controllers
         }
 
         [HttpGet]
-        public async Task<ActivitySummaryResponse> ActivitySummary(string key, TimeSpan timeZoneOffset)
+        public async Task<ActivitySummaryResponse> ActivitySummary(string user, int timeZoneOffset)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
-            var activitySummary = await _activityService.GetActivitySummaryAsync(key, timeZoneOffset);
+            if (user == null) throw new ArgumentNullException(nameof(user));
+            var activitySummary = await _activityService.GetActivitySummaryAsync(user, TimeSpan.FromMinutes(timeZoneOffset));
             return _activitySummaryFormatter.ToResponse(activitySummary);
         }
     }
