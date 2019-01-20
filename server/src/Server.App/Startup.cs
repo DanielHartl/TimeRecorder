@@ -1,3 +1,4 @@
+using ActivityTracker.Server.App.Formatter;
 using ActivityTracker.Server.Domain;
 using ActivityTracker.Server.Persistence;
 using ActivityTracker.Server.Persistence.AzureStorage;
@@ -9,7 +10,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.WindowsAzure.Storage.Auth;
 using System;
-using ActivityTracker.Server.App.Formatter;
 
 namespace ActivityTracker.Server.App
 {
@@ -31,17 +31,26 @@ namespace ActivityTracker.Server.App
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             IActivityRepository activityRepository;
+            StorageCredentials storageCredentials = null;
+
+            var storageCredentialsSection = Configuration.GetSection("StorageCredentials");
+            if (storageCredentialsSection.Exists())
+            {
+                storageCredentials = new StorageCredentials(
+                    storageCredentialsSection?["Name"],
+                    storageCredentialsSection?["Key"]);
+            }
 
             if (HostingEnvironment.IsDevelopment())
             {
-                activityRepository = new InMemoryActivityRepository();
+                activityRepository = storageCredentials == null ? new InMemoryActivityRepository() : (IActivityRepository)new TableActivityRepository(storageCredentials);
             }
             else
             {
-                var storageCredentialsSection = Configuration.GetSection("StorageCredentials");
-                var storageCredentials = new StorageCredentials(
-                    storageCredentialsSection["Name"],
-                    storageCredentialsSection["Key"]);
+                if (storageCredentials == null)
+                {
+                    throw new InvalidOperationException("Storage Credentials not found");
+                }
 
                 activityRepository = new TableActivityRepository(storageCredentials);
             }
