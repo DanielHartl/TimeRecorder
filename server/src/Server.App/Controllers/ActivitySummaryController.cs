@@ -21,11 +21,19 @@ namespace ActivityTracker.Server.App.Controllers
         }
 
         [HttpGet]
-        public async Task<ActivitySummaryResponse> ActivitySummary(string user, int timeZoneOffset)
+        public async Task<ActivitySummaryResponse> ActivitySummary(string user, [FromQuery(Name = "timeZoneOffset")] int? timeZoneOffsetInMinutes)
         {
             if (user == null) throw new ArgumentNullException(nameof(user));
-            var activitySummary = await _activityService.GetActivitySummaryAsync(user, TimeSpan.FromMinutes(timeZoneOffset));
+
+            var activitySummary = await _activityService.GetActivitySummaryAsync(user, GetTimeZoneOffset(timeZoneOffsetInMinutes));
             return _activitySummaryFormatter.ToResponse(activitySummary);
+        }
+
+        private static TimeSpan GetTimeZoneOffset(int? timeZoneOffsetInMinutes)
+        {
+            return timeZoneOffsetInMinutes.HasValue
+                ? TimeSpan.FromMinutes(-timeZoneOffsetInMinutes.Value)
+                : TimeSpan.Zero;
         }
     }
 }
