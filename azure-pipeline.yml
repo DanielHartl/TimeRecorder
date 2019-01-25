@@ -1,28 +1,50 @@
-# Build Docker image for this app using Azure Pipelines
-# http://docs.microsoft.com/azure/devops/pipelines/languages/docker?view=vsts
-pool:
-  vmImage: 'Ubuntu 16.04'
-
-variables:
-- group: 'ACR secrets'
-
 trigger:
 - master
 
 pr:
 - master
 
-steps:
-- script: ./run-tests.sh
+jobs:
+- job: WinAgent
+  pool:
+    vmImage: 'vs2017-win2016'
+  steps:
+  - task: VSBuild@1
+    inputs:
+      solution: 'agents/win/**/*.sln'
+      msbuildArchitecture: 'x64'
+      configuration: Release
+      restoreNugetPackages: true
+  - task: CopyFiles@2
+    inputs:
+      contents: '**/bin/Release/**'
+      targetFolder: $(Build.ArtifactStagingDirectory)
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: $(Build.ArtifactStagingDirectory)
+      artifactName: WinAgent
+    condition: and(succeeded(), in(variables['Build.Reason'], 'IndividualCI', 'BatchedCI'))
 
-- script: |
-    docker build -t $(ACRUserName).azurecr.io/time-recorder/server:$(Build.BuildNumber) server
-    docker login -u $(ACRUserName) -p $(ACRPassword) $(ACRLoginServer)
-    docker push $(ACRUserName).azurecr.io/time-recorder/server:$(Build.BuildNumber)
-  condition: and(succeeded(), in(variables['Build.Reason'], 'IndividualCI', 'BatchedCI'))
 
-- task: PublishTestResults@2
-  condition: succeededOrFailed()
-  inputs:
-    testRunner: VSTest
-    testResultsFiles: '**/*.trx'
+- job: Server
+
+  pool:
+    vmImage: 'Ubuntu 16.04'
+
+  variables:
+  - group: 'ACR secrets'
+
+  steps:
+  - script: ./run-tests.sh
+
+  - script: |
+      docker build -t $(ACRUserName).azurecr.io/time-recorder/server:$(Build.BuildNumber) server
+      docker login -u $(ACRUserName) -p $(ACRPassword) $(ACRLoginServer)
+      docker push $(ACRUserName).azurecr.io/time-recorder/server:$(Build.BuildNumber)
+    condition: and(succeeded(), in(variables['Build.Reason'], 'IndividualCI', 'BatchedCI'))
+
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    inputs:
+      testRunner: VSTest
+      testResultsFiles: '**/*.trx'
