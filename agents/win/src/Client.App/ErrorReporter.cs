@@ -1,19 +1,20 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace ActivityTracker.Client.App
 {
     internal class ErrorReporter
     {
-        private readonly string _logs;
+        private readonly string _logFile;
 
-        public ErrorReporter()
+        public ErrorReporter(string logFile)
         {
-            _logs = Path.Combine(Path.GetTempPath(), "activity.logs");
+            _logFile = logFile ?? throw new ArgumentNullException(nameof(logFile));
         }
 
         public void WriteError(string message)
         {
-            using (var streamWriter = new StreamWriter(_logs, true))
+            using (var streamWriter = new StreamWriter(_logFile, true))
             {
                 streamWriter.WriteLine("ERR  " + message);
             }
@@ -21,7 +22,7 @@ namespace ActivityTracker.Client.App
 
         public void WriteWarning(string message)
         {
-            using (var streamWriter = new StreamWriter(_logs, true))
+            using (var streamWriter = new StreamWriter(_logFile, true))
             {
                 streamWriter.WriteLine("WARN " + message);
             }

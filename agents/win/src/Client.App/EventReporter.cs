@@ -19,8 +19,7 @@ namespace ActivityTracker.Client.App
 
         public async Task ReportActivityEventAsync(string user, DateTimeOffset eventTime)
         {
-            try
-            {
+            await RetryAsync(async () => {
                 var httpClient = new HttpClient { BaseAddress = new Uri(_endpoint) };
 
                 var content = new StringContent(JsonConvert.SerializeObject(new {
@@ -29,11 +28,25 @@ namespace ActivityTracker.Client.App
                 }), Encoding.UTF8, "application/json");
 
                 await httpClient.PostAsync("events", content);
-            }
-            catch (HttpRequestException httpRequestException)
+            }, 10);
+        }
+
+        private async Task RetryAsync(Func<Task> operation, int times)
+        {
+            for (var i = 0; i < times; i++)
             {
-                _errorHandler(httpRequestException);
+                try
+                {
+                    await operation();
+                    return;
+                }
+                catch (Exception exception) when (IsTransientException(exception))
+                {
+                    _errorHandler(exception);
+                }
             }
         }
+
+        private static bool IsTransientException(Exception exception) => exception is TaskCanceledException || exception is HttpRequestException;
     }
 }
