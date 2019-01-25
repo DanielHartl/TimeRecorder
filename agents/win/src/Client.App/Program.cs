@@ -9,8 +9,9 @@ namespace ActivityTracker.Client.App
     {
         public static void Main(string[] args)
         {
-            var endpoint = args[0];
-            var user = args[1];
+            var user = args[0];
+            var endpoint = args[1];
+
             var timeFilterInterval = args.Length > 2 ? int.Parse(args[2]) : 10;
 
             var logFolder = Path.Combine(Path.GetTempPath(), "logs");
