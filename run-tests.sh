@@ -4,7 +4,7 @@ RESUT=$?
 
 docker build -t server .
 docker rm -f server || true
-docker run --name server -e ASPNETCOREENVIRONMENT=development -d -p 80:80 --rm -ti server
+docker run --name server -e ASPNETCORE_ENVIRONMENT=development -d -p 80:80 --rm -ti server
 cd ../integration-tests
 dotnet test --logger trx
 RESIT=$?

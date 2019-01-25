@@ -12,5 +12,8 @@
     <PackageReference Include="xunit" Version="2.4.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
   </ItemGroup>
-
+  <ItemGroup>
+    <Compile Include="../agents/win/src/Client.App/EventReporter.cs" />
+    <Compile Include="../server/src/Server.App/Contracts/**/*.cs" />
+  </ItemGroup>
 </Project>
