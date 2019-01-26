@@ -10,7 +10,7 @@ export class FetchData extends Component {
     var dt = new Date();
     var tz = dt.getTimezoneOffset();
 
-    fetch('api/activitysummary?user=test&timeZoneOffset=' + tz)
+    fetch('api/activitysummary?user=dh&timeZoneOffset=' + tz)
       .then(response => response.json())
       .then(data => {
         this.setState({ summary: data, loading: false });
