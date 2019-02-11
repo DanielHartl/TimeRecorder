@@ -1,39 +1,50 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ActivityTracker.Client.App
+namespace ActivityTracker.Agent.App
 {
     internal class EventReporter
     {
-        private readonly string _endpoint;
+        private readonly Uri _endpoint;
+        private readonly Action<Exception> _warningHandler;
         private readonly Action<Exception> _errorHandler;
 
-        public EventReporter(string endpoint, Action<Exception> errorHandler)
+        public EventReporter(
+            Uri endpoint,
+            Action<Exception> warningHandler,
+            Action<Exception> errorHandler)
         {
             _endpoint = endpoint ?? throw new ArgumentNullException(nameof(endpoint));
+            _warningHandler = warningHandler ?? throw new ArgumentNullException(nameof(warningHandler));
             _errorHandler = errorHandler ?? throw new ArgumentNullException(nameof(errorHandler));
         }
 
-        public async Task ReportActivityEventAsync(string user, DateTimeOffset eventTime)
+        public async Task ReportActivityEventAsync(string user, IDictionary<DateTimeOffset, int> events, TimeSpan timeout)
         {
-            await RetryAsync(async () => {
-                var httpClient = new HttpClient { BaseAddress = new Uri(_endpoint) };
+            await RetryAsync(async () =>
+            {
+                var httpClient = new HttpClient { BaseAddress = _endpoint };
 
-                var content = new StringContent(JsonConvert.SerializeObject(new {
+                var content = new StringContent(JsonConvert.SerializeObject(new
+                {
                     user,
-                    eventTime
+                    events
                 }), Encoding.UTF8, "application/json");
 
                 await httpClient.PostAsync("events", content);
-            }, 10);
+            }, timeout);
         }
 
-        private async Task RetryAsync(Func<Task> operation, int times)
+        private async Task RetryAsync(Func<Task> operation, TimeSpan timeout)
         {
-            for (var i = 0; i < times; i++)
+            var sw = Stopwatch.StartNew();
+
+            while (true)
             {
                 try
                 {
@@ -42,7 +53,15 @@ namespace ActivityTracker.Client.App
                 }
                 catch (Exception exception) when (IsTransientException(exception))
                 {
-                    _errorHandler(exception);
+                    await Task.Delay(1000);
+
+                    if (sw.Elapsed > timeout)
+                    {
+                        _errorHandler(exception);
+                        return;
+                    }
+
+                    _warningHandler(exception);
                 }
             }
         }

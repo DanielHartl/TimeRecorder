@@ -1,4 +1,6 @@
-﻿namespace ActivityTracker.Client.App
+﻿using ActivityTracker.Client.App;
+
+namespace ActivityTracker.Agent.App
 {
     internal class MouseEvent
     {

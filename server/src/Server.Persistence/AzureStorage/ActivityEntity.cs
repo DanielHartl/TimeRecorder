@@ -4,17 +4,17 @@ using Newtonsoft.Json;
 
 namespace ActivityTracker.Server.Persistence.AzureStorage
 {
-    internal class TimeRangeCollectionEntity : TableEntity
+    internal class EventRecordEntity : TableEntity
     {
-        public DateTimeOffset StartDate { get; set; }
-        public string TimeRangesJson { get; set; }
+        public DateTime BaseDate { get; set; }
+        public string Payload { get; set; }
     }
 
-    internal class TimeRangeEntity
+    internal class EventRecordMinuteEntry
     {
-        [JsonProperty("s")]
-        public DateTime StartTime { get; set; }
-        [JsonProperty("e")]
-        public DateTime EndTime { get; set; }
+        [JsonProperty("m")]
+        public int Minute { get; set; }
+        [JsonProperty("c")]
+        public int Count { get; set; }
     }
 }

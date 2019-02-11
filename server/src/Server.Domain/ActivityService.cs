@@ -11,8 +11,6 @@ namespace ActivityTracker.Server.Domain
         private readonly TimeSpan _toleranceWindow;
         private readonly IClock _clock;
 
-        private static readonly TimeSpan _hideIfShorterThan = TimeSpan.FromMinutes(1);
-
         public ActivityService(IActivityRepository activityRepository, TimeSpan toleranceWindow, IClock clock = null)
         {
             _activityRepository = activityRepository ?? throw new ArgumentNullException(nameof(activityRepository));
@@ -20,22 +18,26 @@ namespace ActivityTracker.Server.Domain
             _clock = clock ?? new SystemClock();
         }
 
-        public async Task ReportEventAsync(string user, DateTimeOffset eventTime)
+        public async Task ReportEventAsync(string user, IDictionary<DateTimeOffset, int> events)
         {
-            var weekStart = eventTime.StartOfWeek();
+            var groupedByHour = events.GroupBy(e => e.Key.Floor(TimeSpan.FromHours(1)));
 
-            await _activityRepository.ReadAndCreateOrUpdateAsync(
-                user,
-                weekStart,
-                timeRangeCollection => {
-                    if (timeRangeCollection == null)
+            foreach (var eventGroup in groupedByHour)
+            {
+                await _activityRepository.ReadAndCreateOrUpdateAsync(
+                    user,
+                    eventGroup.Key,
+                    eventRecord =>
                     {
-                        timeRangeCollection = new TimeRangeCollection(weekStart);
-                    }
+                        if (eventRecord == null)
+                        {
+                            eventRecord = new EventRecord(eventGroup.Key);
+                        }
 
-                    timeRangeCollection.AddEvent(eventTime, _toleranceWindow);
-                    return timeRangeCollection;
-                });
+                        eventRecord.AddEvents(eventGroup);
+                        return eventRecord;
+                    });
+            }
         }
 
         public async Task<ActivitySummary> GetActivitySummaryAsync(string user, TimeSpan timeZoneOffset)
@@ -48,12 +50,11 @@ namespace ActivityTracker.Server.Domain
             var start = _clock.UtcNow.Date.AddDays(-22);
             var end = _clock.UtcNow.Date.AddDays(1);
 
-            var timeRanges = await _activityRepository.GetTimeRangesAsync(user, start, end);
+            var eventRecords = await _activityRepository.GetEventRecords(user, start, end);
 
             return ToActivitySummary(
-                timeRanges
+                ToTimeRangeCollections(eventRecords)
                     .SelectMany(x => x.TimeRanges)
-                    .Where(x => x.Duration >= _hideIfShorterThan)
                     .Select(x => new TimeRangeLocal(x.Start.ToOffset(timeZoneOffset).DateTime, x.Duration))
                     .OrderByDescending(x => x.Start.Date));
         }
@@ -65,6 +66,21 @@ namespace ActivityTracker.Server.Domain
                 from weekly in groupByWeek
                 let groupByDay = weekly.GroupBy(x => x.Start.Date)
                 select new WeeklySummary(weekly.Key, groupByDay.Select(daily => new DailySummary(daily.Key, daily))));
+        }
+
+        private IEnumerable<TimeRangeCollection> ToTimeRangeCollections(IEnumerable<EventRecord> eventRecords)
+        {
+            foreach (var eventRecord in eventRecords)
+            {
+                var timeRangeCollection = new TimeRangeCollection(eventRecord.BaseTime);
+
+                foreach (var @event in eventRecord.Events)
+                {
+                    timeRangeCollection.AddEvent(@event.Key, _toleranceWindow);
+                }
+
+                yield return timeRangeCollection;
+            }
         }
     }
 }

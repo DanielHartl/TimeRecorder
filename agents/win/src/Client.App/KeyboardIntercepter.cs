@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using ActivityTracker.Agent.App;
 
 namespace ActivityTracker.Client.App
 {
     internal class KeyboardIntercepter : EventIntercepter<char?>
     {
         public KeyboardIntercepter(
-            Func<char?, Task> callback,
+            Action<char?> callback,
             Action<Exception> unhandledExceptionAction)
             : base(callback, unhandledExceptionAction)
         {

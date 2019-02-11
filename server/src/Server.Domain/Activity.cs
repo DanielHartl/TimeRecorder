@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -54,6 +55,32 @@ namespace ActivityTracker.Server.Domain
         {
             Day = day;
             TimeRanges = timeRanges ?? throw new ArgumentNullException(nameof(timeRanges));
+        }
+    }
+
+    public class EventRecord
+    {
+        public DateTimeOffset BaseTime { get; }
+        private readonly ConcurrentDictionary<DateTimeOffset, int> _events = new ConcurrentDictionary<DateTimeOffset, int>();
+        public IEnumerable<KeyValuePair<DateTimeOffset, int>> Events => _events;
+
+        public EventRecord(DateTimeOffset baseTime)
+        {
+            BaseTime = baseTime;
+        }
+
+        public void AddEvents(IEnumerable<KeyValuePair<DateTimeOffset, int>> newEvents)
+        {
+            foreach (var (key, value) in newEvents)
+            {
+                var currentBase = key.Floor(TimeSpan.FromHours(1));
+                if (currentBase != BaseTime)
+                {
+                    throw new ArgumentException("Invalid timestamp");
+                }
+
+                _events.AddOrUpdate(key, x => value, (k, v) => v + value);
+            }
         }
     }
 

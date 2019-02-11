@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
+using ActivityTracker.Agent.App;
 
 namespace ActivityTracker.Client.App
 {
@@ -10,7 +10,7 @@ namespace ActivityTracker.Client.App
         private readonly HashSet<MouseEventType> _listeningEvents;
 
         public MouseIntercepter(
-            Func<MouseEvent, Task> callback,
+            Action<MouseEvent> callback,
             Action<Exception> unhandledExceptionAction,
             params MouseEventType[] listeningEvents)
         : base(callback, unhandledExceptionAction)

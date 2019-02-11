@@ -1,18 +1,23 @@
-﻿using System;
+﻿using ActivityTracker.Client.App;
+using System;
 using System.IO;
-using System.Threading.Tasks;
+using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 
-namespace ActivityTracker.Client.App
+namespace ActivityTracker.Agent.App
 {
-    class Program
+    internal class Program
     {
         public static void Main(string[] args)
         {
             var user = args[0];
-            var endpoint = args[1];
+            var endpoint = new Uri(args[1]);
 
-            var timeFilterInterval = args.Length > 2 ? int.Parse(args[2]) : 10;
+            //var timeFilterInterval = args.Length > 2 ? int.Parse(args[2]) : 10;
+            var reportingTimeout = TimeSpan.FromMinutes(15);
+
+            var cancellationTokenSource = new CancellationTokenSource();
 
             var logFolder = Path.Combine(Path.GetTempPath(), "logs");
             if (!Directory.Exists(logFolder))
@@ -21,32 +26,45 @@ namespace ActivityTracker.Client.App
             }
 
             var logFile = Path.Combine(logFolder, "log.txt");
-            Console.WriteLine(logFile);
 
-            var errorReporter = new ErrorReporter(logFile);
-            var eventReporter = new EventReporter(endpoint, exception => errorReporter.WriteWarning(exception.ToString()));
-            var timeFilter = new TimeFilter(TimeSpan.FromSeconds(timeFilterInterval));
+            var logger = new Logger(logFile);
+            var eventReporter = new EventReporter(
+                endpoint,
+                exception => logger.LogWarning(exception.ToString()),
+                exception => logger.LogError(exception.ToString()));
 
-            Action<Exception> exceptionHandler = exception => {
-                errorReporter.WriteError(exception.ToString());
+            var eventAggregator = new EventAggregator(
+                async events =>
+                {
+                    logger.LogInfo($"{user} reports {events.Values.Sum()} events");
+                    await eventReporter.ReportActivityEventAsync(user, events, reportingTimeout);
+                },
+                TimeSpan.FromMinutes(1),
+                TimeSpan.FromSeconds(30),
+                exception => logger.LogError(exception.ToString()),
+                cancellationTokenSource.Token);
+
+            Application.ApplicationExit += (s, e) =>
+            {
+                cancellationTokenSource.Cancel();
+            };
+
+            Action<Exception> exceptionHandler = exception =>
+            {
+                logger.LogError(exception.ToString());
                 Application.Exit();
             };
 
-            Func<Task> reportEvent = async () => {
-                await timeFilter.InvokeAsync(async () => {
-                    await eventReporter.ReportActivityEventAsync(user, DateTimeOffset.UtcNow);
-                });
-            };
-
             using (new KeyboardIntercepter(
-                async key => await reportEvent(),
+                key => eventAggregator.AddEvent(DateTimeOffset.UtcNow),
                 exceptionHandler))
             {
                 using (new MouseIntercepter(
-                    async mouseEvent => await reportEvent(),
+                    mouseEvent => eventAggregator.AddEvent(DateTimeOffset.UtcNow),
                     exceptionHandler,
                     MouseEventType.LeftButtonUp,
-                    MouseEventType.RightButtonUp))
+                    MouseEventType.RightButtonUp,
+                    MouseEventType.MouseWheel))
                 {
                     Application.Run();
                 }

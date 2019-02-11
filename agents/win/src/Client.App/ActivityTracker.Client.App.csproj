@@ -48,7 +48,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ErrorReporter.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="EventAggregator.cs" />
     <Compile Include="EventIntercepter.cs" />
     <Compile Include="EventReporter.cs" />
     <Compile Include="KeyboardIntercepter.cs" />
@@ -59,7 +60,6 @@
     <Compile Include="NativeFunctions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TimeFilter.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

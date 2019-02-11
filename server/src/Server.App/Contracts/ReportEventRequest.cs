@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace ActivityTracker.Server.App.Contracts
@@ -24,7 +25,7 @@ namespace ActivityTracker.Server.App.Contracts
         public DailySummaryModel[] DailySummaryModels { get; }
 
         [JsonProperty("total_duration")]
-        public string TotalDuration { get;}
+        public string TotalDuration { get; }
 
         public WeeklySummaryModel(string weekStart, DailySummaryModel[] dailySummaryModels, string totalDuration)
         {
@@ -75,15 +76,15 @@ namespace ActivityTracker.Server.App.Contracts
 
     public class ReportEventRequest
     {
-        public ReportEventRequest(string user, DateTimeOffset eventTime)
+        public ReportEventRequest(string user, IDictionary<DateTimeOffset, int> events)
         {
             User = user;
-            EventTime = eventTime;
+            Events = events;
         }
 
         [Required]
         public string User { get; }
         [Required]
-        public DateTimeOffset EventTime { get; }
+        public IDictionary<DateTimeOffset, int> Events { get; }
     }
 }

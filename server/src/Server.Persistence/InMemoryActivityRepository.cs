@@ -10,35 +10,35 @@ namespace ActivityTracker.Server.Persistence
 {
     public class InMemoryActivityRepository : IActivityRepository
     {
-        private readonly ConcurrentDictionary<(string tag, DateTimeOffset timeKey), TimeRangeCollection> _dataStore = new ConcurrentDictionary<(string tag, DateTimeOffset timeKey), TimeRangeCollection>();
+        private readonly ConcurrentDictionary<(string tag, DateTimeOffset timeKey), EventRecord> _dataStore = new ConcurrentDictionary<(string tag, DateTimeOffset timeKey), EventRecord>();
 
-        public InMemoryActivityRepository()
-        : this(null, DateTimeOffset.MinValue, null)
-        {
-        }
+        //public InMemoryActivityRepository()
+        //: this(null, DateTimeOffset.MinValue, null)
+        //{
+        //}
 
-        public InMemoryActivityRepository(string tag, DateTimeOffset start, string timeRangesJson)
-        {
-            if (timeRangesJson != null)
-            {
-                var obj = JsonConvert.DeserializeAnonymousType(timeRangesJson,
-                    new[]
-                    {
-                        new
-                        {
-                            s = DateTime.MinValue,
-                            e = DateTime.MinValue
-                        }
-                    }
-                );
+        //public InMemoryActivityRepository(string tag, DateTimeOffset start, string timeRangesJson)
+        //{
+        //    //if (timeRangesJson != null)
+        //    //{
+        //    //    var obj = JsonConvert.DeserializeAnonymousType(timeRangesJson,
+        //    //        new[]
+        //    //        {
+        //    //            new
+        //    //            {
+        //    //                s = DateTime.MinValue,
+        //    //                e = DateTime.MinValue
+        //    //            }
+        //    //        }
+        //    //    );
 
-                _dataStore.TryAdd((tag, timeKey: start),
-                    new TimeRangeCollection(start,
-                        obj.Select(x => new TimeRange(new DateTimeOffset(x.s), new DateTimeOffset(x.e)))));
-            }
-        }
+        //    //    _dataStore.TryAdd((tag, timeKey: start),
+        //    //        new TimeRangeCollection(start,
+        //    //            obj.Select(x => new TimeRange(new DateTimeOffset(x.s), new DateTimeOffset(x.e)))));
+        //    //}
+        //}
 
-        public async Task ReadAndCreateOrUpdateAsync(string tag, DateTimeOffset timeKey, Func<TimeRangeCollection, TimeRangeCollection> readAndCreateOrUpdateOperation)
+        public async Task ReadAndCreateOrUpdateAsync(string tag, DateTimeOffset timeKey, Func<EventRecord, EventRecord> readAndCreateOrUpdateOperation)
         {
             var key = (tag, timeKey);
 
@@ -48,7 +48,7 @@ namespace ActivityTracker.Server.Persistence
             _dataStore.AddOrUpdate(key, updatedData, (k, v) => updatedData);
         }
 
-        public async Task<IEnumerable<TimeRangeCollection>> GetTimeRangesAsync(string key, DateTimeOffset from, DateTimeOffset to)
+        public async Task<IEnumerable<EventRecord>> GetEventRecords(string key, DateTimeOffset from, DateTimeOffset to)
         {
             await Task.CompletedTask;
             return _dataStore.Where(x => x.Key.tag == key && x.Key.timeKey >= from && x.Key.timeKey < to).Select(x => x.Value);

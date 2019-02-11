@@ -1,12 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ActivityTracker.Server.Domain;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ActivityTracker.Server.Persistence.AzureStorage
 {
@@ -14,7 +14,7 @@ namespace ActivityTracker.Server.Persistence.AzureStorage
     {
         private readonly CloudTableClient _tableClient;
 
-        private const string TableName = "activities";
+        private const string TableName = "events";
 
         private readonly HashSet<int> _retryableHttpStatusCodes = new HashSet<int>(new[] { 409, 412 });
 
@@ -26,7 +26,7 @@ namespace ActivityTracker.Server.Persistence.AzureStorage
         public async Task ReadAndCreateOrUpdateAsync(
             string tag,
             DateTimeOffset timeKey,
-            Func<TimeRangeCollection, TimeRangeCollection> readAndCreateOrUpdateOperation)
+            Func<EventRecord, EventRecord> readAndCreateOrUpdateOperation)
         {
             var tableReference = _tableClient.GetTableReference(TableName);
             await tableReference.CreateIfNotExistsAsync();
@@ -38,14 +38,14 @@ namespace ActivityTracker.Server.Persistence.AzureStorage
 
             while (true)
             {
-                var tableQuery = new TableQuery<TimeRangeCollectionEntity>().Where(filter).Take(1);
+                var tableQuery = new TableQuery<EventRecordEntity>().Where(filter).Take(1);
                 var readResult =
                     await tableReference.ExecuteQuerySegmentedAsync(tableQuery, new TableContinuationToken());
 
-                var activityEntity = readResult.Results.FirstOrDefault();
-                var etag = activityEntity?.ETag;
+                var eventRecordEntity = readResult.Results.FirstOrDefault();
+                var etag = eventRecordEntity?.ETag;
 
-                var result = readAndCreateOrUpdateOperation(ToDomainObject(activityEntity));
+                var result = readAndCreateOrUpdateOperation(ToDomainObject(eventRecordEntity));
                 var resultEntity = ToEntity(result, tag, etag);
 
                 try
@@ -70,14 +70,11 @@ namespace ActivityTracker.Server.Persistence.AzureStorage
             }
         }
 
-        public async Task<IEnumerable<TimeRangeCollection>> GetTimeRangesAsync(
+        public async Task<IEnumerable<EventRecord>> GetEventRecords(
             string key,
             DateTimeOffset from,
             DateTimeOffset to)
         {
-            //if (from != from.StartOfWeek()) throw new ArgumentException(nameof(from));
-            //if (to != to.StartOfWeek()) throw new ArgumentException(nameof(to));
-
             var tableReference = _tableClient.GetTableReference(TableName);
             await tableReference.CreateIfNotExistsAsync();
 
@@ -89,10 +86,10 @@ namespace ActivityTracker.Server.Persistence.AzureStorage
                     TableOperators.And,
                     TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.LessThan, GetRowKey(to))));
 
-            var tableQuery = new TableQuery<TimeRangeCollectionEntity>().Where(filter);
+            var tableQuery = new TableQuery<EventRecordEntity>().Where(filter);
             var tableContinuationToken = new TableContinuationToken();
 
-            var results = new List<TimeRangeCollection>();
+            var results = new List<EventRecord>();
 
             while (tableContinuationToken != null)
             {
@@ -104,33 +101,41 @@ namespace ActivityTracker.Server.Persistence.AzureStorage
             return results;
         }
 
-        private static string GetRowKey(TimeRangeCollection timeRangeCollection) => GetRowKey(timeRangeCollection.StartDate);
-        private static string GetRowKey(DateTimeOffset timeKey) => timeKey.ToString("yyyyMMdd");
+        private static string GetRowKey(EventRecord eventRecord) => GetRowKey(eventRecord.BaseTime);
+        private static string GetRowKey(DateTimeOffset timeKey) => timeKey.UtcDateTime.ToString("yyyyMMddHHmm");
 
-        private static TimeRangeCollection ToDomainObject(TimeRangeCollectionEntity timeRangeCollectionEntity)
+        private static EventRecord ToDomainObject(EventRecordEntity eventRecordEntity)
         {
-            if (timeRangeCollectionEntity == null) return null;
+            if (eventRecordEntity == null) return null;
 
-            var timeRangeEntities = JsonConvert.DeserializeObject<TimeRangeEntity[]>(timeRangeCollectionEntity.TimeRangesJson);
-            var timeRanges = timeRangeEntities.Select(x => new TimeRange(new DateTimeOffset(x.StartTime, TimeSpan.Zero), new DateTimeOffset(x.EndTime, TimeSpan.Zero)));
-            return new TimeRangeCollection(timeRangeCollectionEntity.StartDate, timeRanges);
+            var minuteEntries = JsonConvert.DeserializeObject<EventRecordMinuteEntry[]>(eventRecordEntity.Payload);
+
+            var eventRecord = new EventRecord(new DateTimeOffset(eventRecordEntity.BaseDate, TimeSpan.Zero));
+            eventRecord.AddEvents(minuteEntries.Select(x =>
+                new KeyValuePair<DateTimeOffset, int>(
+                    eventRecord.BaseTime.AddMinutes(x.Minute),
+                    x.Count)));
+
+            return eventRecord;
         }
 
-        private static TimeRangeCollectionEntity ToEntity(TimeRangeCollection timeRangeCollection, string partitionKey, string etag)
+        private static EventRecordEntity ToEntity(EventRecord eventRecord, string partitionKey, string etag)
         {
-            var rowKey = GetRowKey(timeRangeCollection);
-            var timeRangeEntities = timeRangeCollection.TimeRanges.Select(x => new TimeRangeEntity {
-                StartTime = x.Start.UtcDateTime,
-                EndTime = x.End.UtcDateTime
+            var rowKey = GetRowKey(eventRecord);
+            var minuteEntries = eventRecord.Events.Select(x => new EventRecordMinuteEntry
+            {
+                Minute = (int)(x.Key - eventRecord.BaseTime).TotalMinutes,
+                Count = x.Value
             });
 
-            var timeRangesAsJson = JsonConvert.SerializeObject(timeRangeEntities);
+            var minuteEntriesAsJson = JsonConvert.SerializeObject(minuteEntries);
 
-            return new TimeRangeCollectionEntity {
+            return new EventRecordEntity
+            {
                 PartitionKey = partitionKey,
                 RowKey = rowKey,
-                StartDate = timeRangeCollection.StartDate,
-                TimeRangesJson = timeRangesAsJson,
+                BaseDate = eventRecord.BaseTime.UtcDateTime,
+                Payload = minuteEntriesAsJson,
                 ETag = etag
             };
         }

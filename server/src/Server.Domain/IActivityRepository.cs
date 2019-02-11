@@ -9,8 +9,8 @@ namespace ActivityTracker.Server.Domain
         Task ReadAndCreateOrUpdateAsync(
             string key,
             DateTimeOffset timeKey,
-            Func<TimeRangeCollection, TimeRangeCollection> readAndCreateOrUpdateOperation);
+            Func<EventRecord, EventRecord> readAndCreateOrUpdateOperation);
 
-        Task<IEnumerable<TimeRangeCollection>> GetTimeRangesAsync(string key, DateTimeOffset from, DateTimeOffset to);
+        Task<IEnumerable<EventRecord>> GetEventRecords(string key, DateTimeOffset from, DateTimeOffset to);
     }
 }

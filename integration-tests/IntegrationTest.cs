@@ -1,7 +1,8 @@
-using ActivityTracker.Client.App;
+using ActivityTracker.Agent.App;
 using ActivityTracker.Server.App.Contracts;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
@@ -21,9 +22,13 @@ namespace integration_tests
             var start = new DateTimeOffset(DateTime.UtcNow, TimeSpan.Zero);
             var end = start.AddMinutes(2);
 
-            var eventReporter = new EventReporter(ServerEndpoint, ex => Debug.WriteLine(ex.ToString()));
-            await eventReporter.ReportActivityEventAsync(TestUser, start);
-            await eventReporter.ReportActivityEventAsync(TestUser, end);
+            var eventReporter = new EventReporter(
+                new Uri(ServerEndpoint), 
+                ex => Debug.WriteLine(ex.ToString()),
+                ex => Debug.WriteLine(ex.ToString()));
+
+            await eventReporter.ReportActivityEventAsync(TestUser, new Dictionary<DateTimeOffset, int> { { start, 1 } }, TimeSpan.FromSeconds(20));
+            await eventReporter.ReportActivityEventAsync(TestUser, new Dictionary<DateTimeOffset, int> { { end, 1 } }, TimeSpan.FromSeconds(20));
 
             var httpClient = new HttpClient();
             var resultJson = await httpClient.GetStringAsync($"{ServerEndpoint}/api/activitysummary?user={TestUser}&timeZoneOffset=0");
