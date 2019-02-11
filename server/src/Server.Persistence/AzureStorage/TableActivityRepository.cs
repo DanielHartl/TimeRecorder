@@ -122,11 +122,14 @@ namespace ActivityTracker.Server.Persistence.AzureStorage
         private static EventRecordEntity ToEntity(EventRecord eventRecord, string partitionKey, string etag)
         {
             var rowKey = GetRowKey(eventRecord);
-            var minuteEntries = eventRecord.Events.Select(x => new EventRecordMinuteEntry
-            {
-                Minute = (int)(x.Key - eventRecord.BaseTime).TotalMinutes,
-                Count = x.Value
-            });
+            var minuteEntries = eventRecord
+                .Events
+                .Select(x => new EventRecordMinuteEntry
+                {
+                    Minute = (int)(x.Key - eventRecord.BaseTime).TotalMinutes,
+                    Count = x.Value
+                })
+                .OrderBy(x => x.Minute);
 
             var minuteEntriesAsJson = JsonConvert.SerializeObject(minuteEntries);
 
