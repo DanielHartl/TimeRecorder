@@ -62,7 +62,7 @@ namespace ActivityTracker.Server.Domain
     {
         public DateTimeOffset BaseTime { get; }
         private readonly ConcurrentDictionary<DateTimeOffset, int> _events = new ConcurrentDictionary<DateTimeOffset, int>();
-        public IEnumerable<KeyValuePair<DateTimeOffset, int>> Events => _events;
+        public IEnumerable<KeyValuePair<DateTimeOffset, int>> Events => _events.OrderBy(x => x.Key);
 
         public EventRecord(DateTimeOffset baseTime)
         {
