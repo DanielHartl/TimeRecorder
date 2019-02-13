@@ -36,8 +36,8 @@ namespace ActivityTracker.Server.App.Formatter
         private TimeRangeModel ToTimeRangeModel(TimeRangeLocal timeRangeLocal)
         {
             return new TimeRangeModel(
-                timeRangeLocal.Start.ToString("HH\\:mm\\:ss"),
-                timeRangeLocal.End.ToString("HH\\:mm\\:ss"),
+                timeRangeLocal.Start.ToString("HH\\:mm"),
+                timeRangeLocal.End.ToString("HH\\:mm"),
                 timeRangeLocal.Duration.ToString("hh\\:mm"));
         }
     }

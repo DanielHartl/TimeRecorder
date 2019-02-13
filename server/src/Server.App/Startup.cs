@@ -55,7 +55,7 @@ namespace ActivityTracker.Server.App
                 activityRepository = new TableActivityRepository(storageCredentials);
             }
 
-            var toleranceWindow = TimeSpan.FromMinutes(5);
+            var toleranceWindow = TimeSpan.FromMinutes(15);
 
             services.AddTransient<IActivityService>(si =>
                 new ActivityService(activityRepository, toleranceWindow));
