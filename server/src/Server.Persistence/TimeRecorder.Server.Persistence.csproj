@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Server.Domain\ActivityTracker.Server.Domain.csproj" />
+    <ProjectReference Include="..\Server.Domain\TimeRecorder.Server.Domain.csproj" />
   </ItemGroup>
 
 </Project>

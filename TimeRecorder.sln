@@ -1,0 +1,86 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.271
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "server", "server", "{E9692D0F-D4FD-44E1-BC33-E9B899BDE8CB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "agent", "agent", "{7BA32E61-F921-4959-A050-CC0E294F7D87}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3C396BD5-D2F6-4D19-993C-685987EB4CEA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{AEA5FCE8-FE17-4FE8-8446-6CCCB146CB7F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeRecorder.Server.App", "server\src\Server.App\TimeRecorder.Server.App.csproj", "{AEEC9F30-6870-4D64-ADFA-719A05A17FE6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeRecorder.Server.Domain", "server\src\Server.Domain\TimeRecorder.Server.Domain.csproj", "{0E5E4792-327A-4284-95FC-856A3F45189A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeRecorder.Server.Persistence", "server\src\Server.Persistence\TimeRecorder.Server.Persistence.csproj", "{FBB03CF2-8C0C-40C7-853D-9B914BEB7B09}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeRecorder.Server.Domain.Tests", "server\test\Server.Domain.Tests\TimeRecorder.Server.Domain.Tests.csproj", "{CB69DE9C-83D7-4347-9603-B35C624C3204}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D13A0FFF-A737-4F93-A4D6-4C821A8A1D8B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{EA4ECB83-2736-4995-9575-D4D6AB70B068}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeRecorder.Agent.App.Tests", "agent\test\Agent.App.Tests\TimeRecorder.Agent.App.Tests.csproj", "{0166E101-F3E7-431F-BCE4-C576F35DBA84}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeRecorder.Client.App", "agent\src\Agent.App\TimeRecorder.Client.App.csproj", "{DEBF3BCE-0B00-4373-9828-C9FBA507AEF7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeRecorder.Agent.Bootstrapper", "agent\src\Agent.Bootstrapper\TimeRecorder.Agent.Bootstrapper.csproj", "{FB176F13-A416-4E05-A157-5A05967D21B1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AEEC9F30-6870-4D64-ADFA-719A05A17FE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEEC9F30-6870-4D64-ADFA-719A05A17FE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEEC9F30-6870-4D64-ADFA-719A05A17FE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEEC9F30-6870-4D64-ADFA-719A05A17FE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E5E4792-327A-4284-95FC-856A3F45189A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E5E4792-327A-4284-95FC-856A3F45189A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E5E4792-327A-4284-95FC-856A3F45189A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E5E4792-327A-4284-95FC-856A3F45189A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBB03CF2-8C0C-40C7-853D-9B914BEB7B09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBB03CF2-8C0C-40C7-853D-9B914BEB7B09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBB03CF2-8C0C-40C7-853D-9B914BEB7B09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBB03CF2-8C0C-40C7-853D-9B914BEB7B09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB69DE9C-83D7-4347-9603-B35C624C3204}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB69DE9C-83D7-4347-9603-B35C624C3204}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB69DE9C-83D7-4347-9603-B35C624C3204}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB69DE9C-83D7-4347-9603-B35C624C3204}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0166E101-F3E7-431F-BCE4-C576F35DBA84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0166E101-F3E7-431F-BCE4-C576F35DBA84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0166E101-F3E7-431F-BCE4-C576F35DBA84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0166E101-F3E7-431F-BCE4-C576F35DBA84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEBF3BCE-0B00-4373-9828-C9FBA507AEF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEBF3BCE-0B00-4373-9828-C9FBA507AEF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEBF3BCE-0B00-4373-9828-C9FBA507AEF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEBF3BCE-0B00-4373-9828-C9FBA507AEF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB176F13-A416-4E05-A157-5A05967D21B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB176F13-A416-4E05-A157-5A05967D21B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB176F13-A416-4E05-A157-5A05967D21B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB176F13-A416-4E05-A157-5A05967D21B1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3C396BD5-D2F6-4D19-993C-685987EB4CEA} = {E9692D0F-D4FD-44E1-BC33-E9B899BDE8CB}
+		{AEA5FCE8-FE17-4FE8-8446-6CCCB146CB7F} = {E9692D0F-D4FD-44E1-BC33-E9B899BDE8CB}
+		{AEEC9F30-6870-4D64-ADFA-719A05A17FE6} = {3C396BD5-D2F6-4D19-993C-685987EB4CEA}
+		{0E5E4792-327A-4284-95FC-856A3F45189A} = {3C396BD5-D2F6-4D19-993C-685987EB4CEA}
+		{FBB03CF2-8C0C-40C7-853D-9B914BEB7B09} = {3C396BD5-D2F6-4D19-993C-685987EB4CEA}
+		{CB69DE9C-83D7-4347-9603-B35C624C3204} = {AEA5FCE8-FE17-4FE8-8446-6CCCB146CB7F}
+		{D13A0FFF-A737-4F93-A4D6-4C821A8A1D8B} = {7BA32E61-F921-4959-A050-CC0E294F7D87}
+		{EA4ECB83-2736-4995-9575-D4D6AB70B068} = {7BA32E61-F921-4959-A050-CC0E294F7D87}
+		{0166E101-F3E7-431F-BCE4-C576F35DBA84} = {EA4ECB83-2736-4995-9575-D4D6AB70B068}
+		{DEBF3BCE-0B00-4373-9828-C9FBA507AEF7} = {D13A0FFF-A737-4F93-A4D6-4C821A8A1D8B}
+		{FB176F13-A416-4E05-A157-5A05967D21B1} = {D13A0FFF-A737-4F93-A4D6-4C821A8A1D8B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {63F77002-F48F-46F8-A0DA-255BD5A26AB4}
+	EndGlobalSection
+EndGlobal

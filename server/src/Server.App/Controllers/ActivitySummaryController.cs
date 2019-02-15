@@ -1,11 +1,11 @@
-using ActivityTracker.Server.App.Contracts;
-using ActivityTracker.Server.App.Formatter;
-using ActivityTracker.Server.Domain;
-using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using TimeRecorder.Server.App.Contracts;
+using TimeRecorder.Server.App.Formatter;
+using TimeRecorder.Server.Domain;
 
-namespace ActivityTracker.Server.App.Controllers
+namespace TimeRecorder.Server.App.Controllers
 {
     [Route("api/[controller]")]
     public class ActivitySummaryController : Controller

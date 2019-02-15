@@ -1,24 +1,23 @@
-cd server
 dotnet test --logger trx
-RESUT=$?
+RESULT_UT=$?
 
 docker build -t server .
 docker rm -f server || true
 docker run --name server -e ASPNETCORE_ENVIRONMENT=development -d -p 80:80 --rm -ti server
 cd ../integration-tests
 dotnet test --logger trx
-RESIT=$?
+RESULT_IT=$?
 
 docker rm -f server || true
 
-if [ $RESUT -ne 0 ]; then
+if [ $RESULT_UT -ne 0 ]; then
   echo Unit tests failed
-  exit $RESUT 
+  exit $RESULT_UT 
 fi
 
-if [ $RESIT -ne 0 ]; then
+if [ $RESULT_IT -ne 0 ]; then
   echo Integration tests failed
-  exit $RESIT
+  exit $RESULT_IT
 fi
 
 exit 0

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace ActivityTracker.Agent.App
+namespace TimeRecorder.Agent.App
 {
     internal class Logger
     {

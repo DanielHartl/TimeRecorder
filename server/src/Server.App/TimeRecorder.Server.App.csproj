@@ -7,7 +7,7 @@
     <IsPackable>false</IsPackable>
     <SpaRoot>ClientApp\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
-    <AssemblyName>ActivityTracker.Server.App</AssemblyName>
+    <AssemblyName>TimeRecorder.Server.App</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,12 +23,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Server.Domain\ActivityTracker.Server.Domain.csproj" />
-    <ProjectReference Include="..\Server.Persistence\ActivityTracker.Server.Persistence.csproj" />
+    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Properties\PublishProfiles\" />
+    <ProjectReference Include="..\Server.Domain\TimeRecorder.Server.Domain.csproj" />
+    <ProjectReference Include="..\Server.Persistence\TimeRecorder.Server.Persistence.csproj" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

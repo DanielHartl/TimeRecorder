@@ -2,7 +2,7 @@ using System;
 using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
 
-namespace ActivityTracker.Server.Persistence.AzureStorage
+namespace TimeRecorder.Server.Persistence.AzureStorage
 {
     internal class EventRecordEntity : TableEntity
     {

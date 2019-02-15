@@ -1,14 +1,14 @@
-using ActivityTracker.Server.Domain;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Auth;
-using Microsoft.WindowsAzure.Storage.Table;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Auth;
+using Microsoft.WindowsAzure.Storage.Table;
+using Newtonsoft.Json;
+using TimeRecorder.Server.Domain;
 
-namespace ActivityTracker.Server.Persistence.AzureStorage
+namespace TimeRecorder.Server.Persistence.AzureStorage
 {
     public class TableActivityRepository : IActivityRepository
     {

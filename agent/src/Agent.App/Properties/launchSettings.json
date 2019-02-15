@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TimeRecorder.Client.App": {
+      "commandName": "Project",
+      "commandLineArgs": "dh http://timerec.westus.azurecontainer.io"
+    }
+  }
+}

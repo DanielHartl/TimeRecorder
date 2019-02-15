@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ActivityTracker.Server.Domain
+namespace TimeRecorder.Server.Domain
 {
     public interface IActivityRepository
     {

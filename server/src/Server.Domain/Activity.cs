@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ActivityTracker.Server.Domain
+namespace TimeRecorder.Server.Domain
 {
     public struct ActivitySummary
     {

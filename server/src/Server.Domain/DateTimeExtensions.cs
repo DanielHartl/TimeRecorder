@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ActivityTracker.Server.Domain
+namespace TimeRecorder.Server.Domain
 {
     public static class DateTimeExtensions
     {

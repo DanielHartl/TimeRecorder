@@ -1,8 +1,8 @@
-﻿using ActivityTracker.Server.App.Contracts;
-using ActivityTracker.Server.Domain;
-using System.Linq;
+﻿using System.Linq;
+using TimeRecorder.Server.App.Contracts;
+using TimeRecorder.Server.Domain;
 
-namespace ActivityTracker.Server.App.Formatter
+namespace TimeRecorder.Server.App.Formatter
 {
     public interface IActivitySummaryFormatter
     {
