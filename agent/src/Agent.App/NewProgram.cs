@@ -81,7 +81,7 @@ namespace TimeRecorder.Agent.App
 
                 if (time < 2)
                 {
-                    Console.WriteLine($"REPORTING EVENT for {user} to {endpoint}");
+                    logger.LogInfo($"REPORTING EVENT for {user} to {endpoint}");
                     eventAggregator.AddEvent(DateTimeOffset.UtcNow);
                 }
 
