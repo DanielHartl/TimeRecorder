@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ActivityTracker.Server.App.Contracts;
-using ActivityTracker.Server.Domain;
 using Microsoft.AspNetCore.Mvc;
+using TimeRecorder.Server.App.Contracts;
+using TimeRecorder.Server.Domain;
 
-namespace ActivityTracker.Server.App.Controllers
+namespace TimeRecorder.Server.App.Controllers
 {
     [Route("events")]
     public class EventApiController : Controller

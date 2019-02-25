@@ -1,8 +1,8 @@
-﻿using ActivityTracker.Server.App.Contracts;
-using ActivityTracker.Server.Domain;
-using System.Linq;
+﻿using System.Linq;
+using TimeRecorder.Server.App.Contracts;
+using TimeRecorder.Server.Domain;
 
-namespace ActivityTracker.Server.App.Formatter
+namespace TimeRecorder.Server.App.Formatter
 {
     public interface IActivitySummaryFormatter
     {
@@ -36,8 +36,8 @@ namespace ActivityTracker.Server.App.Formatter
         private TimeRangeModel ToTimeRangeModel(TimeRangeLocal timeRangeLocal)
         {
             return new TimeRangeModel(
-                timeRangeLocal.Start.ToString("HH\\:mm\\:ss"),
-                timeRangeLocal.End.ToString("HH\\:mm\\:ss"),
+                timeRangeLocal.Start.ToString("HH\\:mm"),
+                timeRangeLocal.End.ToString("HH\\:mm"),
                 timeRangeLocal.Duration.ToString("hh\\:mm"));
         }
     }

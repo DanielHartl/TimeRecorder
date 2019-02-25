@@ -1,12 +1,12 @@
-﻿using ActivityTracker.Server.Domain;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using TimeRecorder.Server.Domain;
 
-namespace ActivityTracker.Server.Persistence
+namespace TimeRecorder.Server.Persistence
 {
     public class InMemoryActivityRepository : IActivityRepository
     {

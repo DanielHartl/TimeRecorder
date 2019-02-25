@@ -1,9 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 
-namespace ActivityTracker.Server.App.Controllers
+namespace TimeRecorder.Server.App.Controllers
 {
     [Route("api/[controller]")]
     public class SampleDataController : Controller

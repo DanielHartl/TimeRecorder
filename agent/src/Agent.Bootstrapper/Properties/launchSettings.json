@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TimeRecorder.Agent.Bootstrapper": {
+      "commandName": "Project",
+      "commandLineArgs": "dh http://localhost:8080"
+    }
+  }
+}

@@ -2,9 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <RootNamespace>integration_tests</RootNamespace>
+    <RootNamespace>TimeRecorder.IntegrationTests</RootNamespace>
 
     <IsPackable>false</IsPackable>
+
+    <AssemblyName>TimeRecorder.IntegrationTests</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,8 +14,9 @@
     <PackageReference Include="xunit" Version="2.4.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="../agents/win/src/Client.App/EventReporter.cs" />
-    <Compile Include="../server/src/Server.App/Contracts/**/*.cs" />
+    <ProjectReference Include="..\agent\src\Agent.App\TimeRecorder.Client.App.csproj" />
+    <ProjectReference Include="..\server\src\Server.App\TimeRecorder.Server.App.csproj" />
   </ItemGroup>
 </Project>

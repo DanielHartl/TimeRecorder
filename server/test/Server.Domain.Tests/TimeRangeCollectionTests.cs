@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using Xunit;
 
-namespace ActivityTracker.Server.Domain.Tests
+namespace TimeRecorder.Server.Domain.Tests
 {
     public class TimeRangeCollectionTests
     {

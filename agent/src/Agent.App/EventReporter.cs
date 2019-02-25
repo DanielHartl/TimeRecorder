@@ -1,14 +1,14 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
-namespace ActivityTracker.Agent.App
+namespace TimeRecorder.Agent.App
 {
-    internal class EventReporter
+    public class EventReporter
     {
         private readonly Uri _endpoint;
         private readonly Action<Exception> _warningHandler;

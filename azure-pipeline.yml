@@ -5,29 +5,7 @@ pr:
 - master
 
 jobs:
-- job: WinAgent
-  pool:
-    vmImage: 'vs2017-win2016'
-  steps:
-  - task: VSBuild@1
-    inputs:
-      solution: 'agents/win/**/*.sln'
-      msbuildArchitecture: 'x64'
-      configuration: Release
-      restoreNugetPackages: true
-  - task: CopyFiles@2
-    inputs:
-      contents: '**/bin/Release/**'
-      targetFolder: $(Build.ArtifactStagingDirectory)
-  - task: PublishBuildArtifacts@1
-    inputs:
-      pathtoPublish: $(Build.ArtifactStagingDirectory)
-      artifactName: WinAgent
-    condition: and(succeeded(), in(variables['Build.Reason'], 'IndividualCI', 'BatchedCI'))
-
-
-- job: Server
-
+- job: Main
   pool:
     vmImage: 'Ubuntu 16.04'
 
@@ -37,6 +15,26 @@ jobs:
   steps:
   - script: ./run-tests.sh
 
+  - script: |
+      cd agent/src/Agent.App
+      dotnet publish -c Release -o $(Build.ArtifactStagingDirectory)/TimeRecorder.Agent.App
+
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/TimeRecorder.Agent.App' 
+      includeRootFolder: false
+      archiveType: 'zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/TimeRecorder.Agent.zip' 
+      replaceExistingArchive: true 
+      verbose: true
+
+  - task: AzureCLI@1
+    inputs:
+      connectedServiceNameARM: TimeRec
+      scriptLocation: inlineScript
+      inlineScript: az storage blob upload --account-name timerec --container-name public -n TimeRecorder.Agent.zip -f '$(Build.ArtifactStagingDirectory)/TimeRecorder.Agent.zip'
+    condition: and(succeeded(), in(variables['Build.Reason'], 'IndividualCI', 'BatchedCI'))
+    
   - script: |
       docker build -t $(ACRUserName).azurecr.io/time-recorder/server:$(Build.BuildNumber) server
       docker login -u $(ACRUserName) -p $(ACRPassword) $(ACRLoginServer)
