@@ -70,13 +70,15 @@ namespace TimeRecorder.Server.Domain
 
         private IEnumerable<TimeRangeCollection> ToTimeRangeCollections(IEnumerable<EventRecord> eventRecords)
         {
-            foreach (var eventRecord in eventRecords)
-            {
-                var timeRangeCollection = new TimeRangeCollection(eventRecord.BaseTime);
+            var groupedByWeek = eventRecords.GroupBy(x => x.BaseTime.StartOfWeek());
 
-                foreach (var @event in eventRecord.Events)
+            foreach (var eventRecordGroup in groupedByWeek)
+            {
+                var timeRangeCollection = new TimeRangeCollection(eventRecordGroup.Key);
+
+                foreach (var (timeStamp, count) in eventRecordGroup.SelectMany(x => x.Events))
                 {
-                    timeRangeCollection.AddEvent(@event.Key, _toleranceWindow);
+                    timeRangeCollection.AddEvent(timeStamp, _toleranceWindow);
                 }
 
                 yield return timeRangeCollection;
