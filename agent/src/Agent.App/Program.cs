@@ -7,23 +7,6 @@ using System.Threading.Tasks;
 
 namespace TimeRecorder.Agent.App
 {
-    internal static class NativeFunctions
-    {
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    struct LASTINPUTINFO
-    {
-        public static readonly int SizeOf = Marshal.SizeOf(typeof(LASTINPUTINFO));
-
-        [MarshalAs(UnmanagedType.U4)]
-        public UInt32 cbSize;
-        [MarshalAs(UnmanagedType.U4)]
-        public UInt32 dwTime;
-    }
-
     public class Program
     {
         public static void Main(string[] args)
@@ -33,13 +16,19 @@ namespace TimeRecorder.Agent.App
 
         public static async Task MainAsync(string[] args)
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            IInputListener inputListener;
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                while (true)
-                {
-                    Console.WriteLine($"Running on linux {DateTime.Now}");
-                    Thread.Sleep(10000);
-                }
+                inputListener = new WindowsInputListener();
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                inputListener = new LinuxInputListener();
+            }
+            else
+            {
+                throw new PlatformNotSupportedException();
             }
 
             var user = args[0];
@@ -77,9 +66,9 @@ namespace TimeRecorder.Agent.App
 
             while (true)
             {
-                var time = GetLastInputTime();
+                var time = inputListener.GetTimeSinceLastInput();
 
-                if (time < 2)
+                if (time < TimeSpan.FromSeconds(2))
                 {
                     logger.LogInfo($"REPORTING EVENT for {user} to {endpoint}");
                     eventAggregator.AddEvent(DateTimeOffset.UtcNow);
@@ -87,24 +76,6 @@ namespace TimeRecorder.Agent.App
 
                 Thread.Sleep(1000);
             }
-        }
-
-        static uint GetLastInputTime()
-        {
-            uint idleTime = 0;
-            LASTINPUTINFO lastInputInfo = new LASTINPUTINFO();
-            lastInputInfo.cbSize = (uint)Marshal.SizeOf(lastInputInfo);
-            lastInputInfo.dwTime = 0;
-
-            uint envTicks = (uint)Environment.TickCount;
-
-            if (NativeFunctions.GetLastInputInfo(ref lastInputInfo))
-            {
-                uint lastInputTick = lastInputInfo.dwTime;
-                idleTime = envTicks - lastInputTick;
-            }
-
-            return ((idleTime > 0) ? (idleTime / 1000) : 0);
         }
     }
 }
