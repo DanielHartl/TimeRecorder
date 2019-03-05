@@ -7,31 +7,12 @@ namespace TimeRecorder.Server.App.Contracts
 {
     public class ActivitySummaryResponse
     {
-        [JsonProperty("weekly")]
-        public WeeklySummaryModel[] WeeklySummaryModels { get; }
-
-        public ActivitySummaryResponse(WeeklySummaryModel[] weeklySummaryModels)
-        {
-            WeeklySummaryModels = weeklySummaryModels ?? throw new ArgumentNullException(nameof(weeklySummaryModels));
-        }
-    }
-
-    public class WeeklySummaryModel
-    {
-        [JsonProperty("weekstart")]
-        public string WeekStart { get; }
-
         [JsonProperty("daily")]
         public DailySummaryModel[] DailySummaryModels { get; }
 
-        [JsonProperty("total_duration")]
-        public string TotalDuration { get; }
-
-        public WeeklySummaryModel(string weekStart, DailySummaryModel[] dailySummaryModels, string totalDuration)
+        public ActivitySummaryResponse(DailySummaryModel[] dailySummaryModels)
         {
-            WeekStart = weekStart ?? throw new ArgumentNullException(nameof(weekStart));
             DailySummaryModels = dailySummaryModels ?? throw new ArgumentNullException(nameof(dailySummaryModels));
-            TotalDuration = totalDuration;
         }
     }
 

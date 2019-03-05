@@ -11,24 +11,18 @@ namespace TimeRecorder.Server.App.Formatter
 
     public class DefaultActivitySummaryFormatter : IActivitySummaryFormatter
     {
+        private const string DateTimeFormatString = "yyyy-MM-ddTHH:mm:ss";
+
         public ActivitySummaryResponse ToResponse(ActivitySummary activitySummary)
         {
             return new ActivitySummaryResponse(
-                activitySummary.WeeklySummaries.Select(ToWeeklyModel).ToArray());
-        }
-
-        private WeeklySummaryModel ToWeeklyModel(WeeklySummary weeklySummary)
-        {
-            return new WeeklySummaryModel(
-                weeklySummary.WeekStart.ToString("MM dd"),
-                weeklySummary.DailySummaries.Select(ToDailyModel).ToArray(),
-                weeklySummary.TotalDuration.ToString("hh\\:mm"));
+                activitySummary.DailySummaries.Select(ToDailyModel).ToArray());
         }
 
         private DailySummaryModel ToDailyModel(DailySummary dailySummary)
         {
             return new DailySummaryModel(
-                dailySummary.Day.ToString("MMM dd"),
+                dailySummary.Day.ToString(DateTimeFormatString),
                 dailySummary.TotalDuration.ToString("hh\\:mm"),
                 dailySummary.TimeRanges.Select(ToTimeRangeModel).ToArray());
         }

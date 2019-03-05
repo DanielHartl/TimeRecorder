@@ -74,7 +74,7 @@ namespace TimeRecorder.Agent.App
                     eventAggregator.AddEvent(DateTimeOffset.UtcNow);
                 }
 
-                Thread.Sleep(1000);
+                await Task.Delay(1000);
             }
         }
     }

@@ -1,9 +1,10 @@
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using TimeRecorder.Agent.App;
 using TimeRecorder.Server.App.Contracts;
 using Xunit;
@@ -18,18 +19,24 @@ namespace TimeRecorder.IntegrationTests
         [Fact]
         public async Task When_event_gets_sent_summary_shows()
         {
-            var start = new DateTimeOffset(DateTime.UtcNow, TimeSpan.Zero);
-            var end = start.AddMinutes(2);
+            var startTime = new DateTimeOffset(DateTime.UtcNow, TimeSpan.Zero);
 
-            var eventReporter = new EventReporter(ServerEndpoint, ex => Debug.WriteLine(ex.ToString()));
-            await eventReporter.ReportActivityEventAsync(TestUser, start);
-            await eventReporter.ReportActivityEventAsync(TestUser, end);
+            var start = new Dictionary<DateTimeOffset, int> { { startTime, 1 } };
+            var end = new Dictionary<DateTimeOffset, int> { { startTime.AddMinutes(2), 1 } };
+
+            var eventReporter = new EventReporter(
+                new Uri(ServerEndpoint),
+                ex => Debug.WriteLine(ex.ToString()),
+                ex => Debug.WriteLine(ex.ToString()));
+
+            await eventReporter.ReportActivityEventAsync(TestUser, start, TimeSpan.FromSeconds(20));
+            await eventReporter.ReportActivityEventAsync(TestUser, end, TimeSpan.FromSeconds(20));
 
             var httpClient = new HttpClient();
             var resultJson = await httpClient.GetStringAsync($"{ServerEndpoint}/api/activitysummary?user={TestUser}&timeZoneOffset=0");
 
-            var activitySummaryReponse = JsonConvert.DeserializeObject<ActivitySummaryResponse>(resultJson);
-            Assert.Equal("00:02", activitySummaryReponse.WeeklySummaryModels.First().TotalDuration);
+            var activitySummaryResponse = JsonConvert.DeserializeObject<ActivitySummaryResponse>(resultJson);
+            Assert.Equal("00:02", activitySummaryResponse.DailySummaryModels.First().TotalDuration);
         }
     }
 }

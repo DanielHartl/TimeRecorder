@@ -7,26 +7,11 @@ namespace TimeRecorder.Server.Domain
 {
     public struct ActivitySummary
     {
-        public IEnumerable<WeeklySummary> WeeklySummaries { get; }
-
-        public ActivitySummary(IEnumerable<WeeklySummary> weeklySummaries)
-        {
-            WeeklySummaries = weeklySummaries;
-        }
-    }
-
-    public struct WeeklySummary
-    {
-        public DateTime WeekStart { get; }
-
         public IEnumerable<DailySummary> DailySummaries { get; }
 
-        public TimeSpan TotalDuration => TimeSpan.FromTicks(DailySummaries.Sum(x => x.TotalDuration.Ticks));
-
-        public WeeklySummary(DateTime weekStart, IEnumerable<DailySummary> dailySummaries)
+        public ActivitySummary(IEnumerable<DailySummary> dailySummaries)
         {
-            WeekStart = weekStart;
-            DailySummaries = dailySummaries ?? throw new ArgumentNullException(nameof(dailySummaries));
+            DailySummaries = dailySummaries;
         }
     }
 

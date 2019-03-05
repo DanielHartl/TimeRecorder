@@ -1,11 +1,12 @@
-dotnet test --logger trx
+SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
+
+dotnet test $SCRIPTPATH/TimeRecorder.sln --logger trx
 RESULT_UT=$?
 
-docker build -t server .
+docker build -t server $SCRIPTPATH/server
 docker rm -f server || true
 docker run --name server -e ASPNETCORE_ENVIRONMENT=development -d -p 80:80 --rm -ti server
-cd ../integration-tests
-dotnet test --logger trx
+dotnet test $SCRIPTPATH/integration-tests/integration-tests.csproj --logger trx
 RESULT_IT=$?
 
 docker rm -f server || true

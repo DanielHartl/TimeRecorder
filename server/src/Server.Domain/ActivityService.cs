@@ -61,11 +61,10 @@ namespace TimeRecorder.Server.Domain
 
         private static ActivitySummary ToActivitySummary(IEnumerable<TimeRangeLocal> timeRanges)
         {
-            var groupByWeek = timeRanges.GroupBy(x => x.Start.StartOfWeek());
+            var groupByDay = timeRanges.GroupBy(x => x.Start.Date);
             return new ActivitySummary(
-                from weekly in groupByWeek
-                let groupByDay = weekly.GroupBy(x => x.Start.Date)
-                select new WeeklySummary(weekly.Key, groupByDay.Select(daily => new DailySummary(daily.Key, daily))));
+                from daily in groupByDay
+                select new DailySummary(daily.Key, daily));
         }
 
         private IEnumerable<TimeRangeCollection> ToTimeRangeCollections(IEnumerable<EventRecord> eventRecords)
