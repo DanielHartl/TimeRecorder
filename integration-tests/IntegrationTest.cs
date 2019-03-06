@@ -36,7 +36,7 @@ namespace TimeRecorder.IntegrationTests
             var resultJson = await httpClient.GetStringAsync($"{ServerEndpoint}/api/activitysummary?user={TestUser}&timeZoneOffset=0");
 
             var activitySummaryResponse = JsonConvert.DeserializeObject<ActivitySummaryResponse>(resultJson);
-            Assert.Equal("00:02", activitySummaryResponse.DailySummaryModels.First().TotalDuration);
+            Assert.Equal(2, activitySummaryResponse.DailySummaryModels.First().TotalDurationInMinutes);
         }
     }
 }

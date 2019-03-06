@@ -21,19 +21,19 @@ namespace TimeRecorder.Server.App.Contracts
         [JsonProperty("day")]
         public string Day { get; }
 
-        [JsonProperty("total_duration")]
-        public string TotalDuration { get; }
+        [JsonProperty("total_duration_in_minutes")]
+        public int TotalDurationInMinutes { get; }
 
         [JsonProperty("timeranges")]
         public TimeRangeModel[] TimeRangeModels { get; }
 
         public DailySummaryModel(
             string day,
-            string totalDuration,
+            int totalDurationInMinutes,
             TimeRangeModel[] timeRangeModels)
         {
             Day = day;
-            TotalDuration = totalDuration;
+            TotalDurationInMinutes = totalDurationInMinutes;
             TimeRangeModels = timeRangeModels ?? throw new ArgumentNullException(nameof(timeRangeModels));
         }
     }
@@ -44,14 +44,14 @@ namespace TimeRecorder.Server.App.Contracts
         public string Start { get; }
         [JsonProperty("end")]
         public string End { get; }
-        [JsonProperty("duration")]
-        public string Duration { get; }
+        [JsonProperty("duration_in_minutes")]
+        public int DurationInMinutes { get; }
 
-        public TimeRangeModel(string start, string end, string duration)
+        public TimeRangeModel(string start, string end, int durationInMinutes)
         {
             Start = start ?? throw new ArgumentNullException(nameof(start));
             End = end ?? throw new ArgumentNullException(nameof(end));
-            Duration = duration ?? throw new ArgumentNullException(nameof(duration));
+            DurationInMinutes = durationInMinutes;
         }
     }
 

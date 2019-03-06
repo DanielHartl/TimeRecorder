@@ -46,7 +46,6 @@ namespace TimeRecorder.Agent.App
             var logFile = Path.Combine(logFolder, "log.txt");
             Console.WriteLine(logFile);
 
-
             var logger = new Logger(logFile);
             var eventReporter = new EventReporter(
                 endpoint,

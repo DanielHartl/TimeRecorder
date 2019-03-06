@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import moment from 'moment-twitter';
 
 Date.prototype.getWeekNumber = function(){
   var d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
@@ -77,7 +78,7 @@ export class FetchData extends Component {
     return (
       <React.Fragment key={daily.day}>
       <tr>
-        <td colSpan="2">{ new Date(daily.day).toDateString() }</td><td>{ daily.total_duration }</td>
+        <td colSpan="2">{ new Date(daily.day).toDateString() }</td><td>{ FetchData.formatTimeSpan(daily.total_duration_in_minutes) }</td>
       </tr>
       { daily.timeranges.map(t => FetchData.renderTimeRanges(t)) }
       </React.Fragment>
@@ -88,8 +89,12 @@ export class FetchData extends Component {
     return (<tr key={t.start}>
         <td>{t.start}</td>
         <td>{t.end}</td>
-        <td>{t.duration}</td>
+        <td>{FetchData.formatTimeSpan(t.duration_in_minutes)}</td>
       </tr>);
+  }
+
+  static formatTimeSpan(durationInMinutes) {
+    return moment().subtract(durationInMinutes, "minutes").twitterLong();
   }
 
   render() {

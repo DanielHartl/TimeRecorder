@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "bootstrap": "^3.4.1",
+    "moment-twitter": "^0.2.0",
     "react": "^16.0.0",
     "react-bootstrap": "^0.31.5",
     "react-calendar-heatmap": "^1.8.0",

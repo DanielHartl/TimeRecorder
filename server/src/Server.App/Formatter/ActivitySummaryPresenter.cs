@@ -13,6 +13,8 @@ namespace TimeRecorder.Server.App.Formatter
     {
         private const string DateTimeFormatString = "yyyy-MM-ddTHH:mm:ss";
 
+        private const string HourlyFormatString = "HH\\:mm";
+
         public ActivitySummaryResponse ToResponse(ActivitySummary activitySummary)
         {
             return new ActivitySummaryResponse(
@@ -23,16 +25,16 @@ namespace TimeRecorder.Server.App.Formatter
         {
             return new DailySummaryModel(
                 dailySummary.Day.ToString(DateTimeFormatString),
-                dailySummary.TotalDuration.ToString("hh\\:mm"),
+                (int)dailySummary.TotalDuration.TotalMinutes,
                 dailySummary.TimeRanges.Select(ToTimeRangeModel).ToArray());
         }
 
         private TimeRangeModel ToTimeRangeModel(TimeRangeLocal timeRangeLocal)
         {
             return new TimeRangeModel(
-                timeRangeLocal.Start.ToString("HH\\:mm"),
-                timeRangeLocal.End.ToString("HH\\:mm"),
-                timeRangeLocal.Duration.ToString("hh\\:mm"));
+                timeRangeLocal.Start.ToString(HourlyFormatString),
+                timeRangeLocal.End.ToString(HourlyFormatString),
+                (int)timeRangeLocal.Duration.TotalMinutes);
         }
     }
 }
