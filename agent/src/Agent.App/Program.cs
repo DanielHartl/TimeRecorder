@@ -63,17 +63,24 @@ namespace TimeRecorder.Agent.App
                 exception => logger.LogError(exception.ToString()),
                 cancellationTokenSource.Token);
 
-            while (true)
+            try
             {
-                var time = inputListener.GetTimeSinceLastInput();
-
-                if (time < TimeSpan.FromSeconds(2))
+                while (true)
                 {
-                    logger.LogInfo($"REPORTING EVENT for {user} to {endpoint}");
-                    eventAggregator.AddEvent(DateTimeOffset.UtcNow);
-                }
+                    var time = inputListener.GetTimeSinceLastInput();
 
-                await Task.Delay(1000);
+                    if (time < TimeSpan.FromSeconds(2))
+                    {
+                        logger.LogInfo($"REPORTING EVENT for {user} to {endpoint}");
+                        eventAggregator.AddEvent(DateTimeOffset.UtcNow);
+                    }
+
+                    await Task.Delay(1000);
+                }
+            }
+            catch (Exception exception)
+            {
+                logger.LogError(exception.ToString());
             }
         }
     }
